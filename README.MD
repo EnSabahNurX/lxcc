@@ -30,4 +30,11 @@ LXDE Control Center is a graphical user interface (GUI) application built with P
 2. **Run the application:**
 
    ```bash
-   ./lxcc
+   ./usr/bin/lxcc
+## Usage
+- Click on the icons to launch corresponding system configuration tools.
+- Some actions may require superuser privileges and will prompt for authentication.
+## Licence
+This project is licensed under the MIT License
+## Acknowledgements
+Special thanks to the developers of the LXDE project and the Gtk library.
