@@ -26,11 +26,21 @@ LXDE Control Center is a graphical user interface (GUI) application built with P
 
    ```bash
    cd lxcc
-
-2. **Run the application:**
+3. **Install dependencies:**
+   ```bash
+   sudo apt-get install python3-gi
+4. **Run the application:**
 
    ```bash
    ./usr/bin/lxcc
+### Alternative installation
+1. **Build a dpkg file to install it. Do this command below outside of the folder containg the cloned data from github:**
+   ```bash
+   dpkg --build lxcc
+1. **Install using dpkg:**
+   ```bash
+   dpkg -i lxcc.deb
+   sudo apt install -f
 ## Usage
 - Click on the icons to launch corresponding system configuration tools.
 - Some actions may require superuser privileges and will prompt for authentication.
