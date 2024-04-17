@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=LXDE Control Center
+Name[it]=Centro di Controllo LXDE
+Icon=configurator
+Exec=/usr/bin/lxcc
+StartupNotify=true
+Terminal=false
+Categories=GTK;Settings;HardwareSettings;
+OnlyShowIn=LXDE;
+
+

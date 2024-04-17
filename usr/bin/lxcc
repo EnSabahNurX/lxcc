@@ -1,0 +1,103 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
+import locale
+import os
+import sys
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GdkPixbuf, Gdk
+
+control_center_icons=[
+    ["Light Control","video-television",'sudo /usr/bin/lightcontrol'],
+    ["LXDM Settings","config-users",'lxqt-sudo /usr/bin/lxdm-config'],
+    ["Configure Openbox","obconf",'obconf'],
+    ["Mouse&Keyboard","input-mouse",'lxinput'],
+    ["Set Wallpaper","background",'pcmanfm --desktop-pref'],
+    ["Appearance","preferences-desktop-theme",'lxappearance'],
+    ["PCManFM Settings","file-manager",'pcmanfm --show-pref=1'],
+    ["PCManFM Super User Mode","file-manager",'lxqt-sudo /usr/bin/pcmanfm'],
+    ["Refresh Panel","gtk-refresh",'lxpanelctl restart'],
+    ["Install Software","package-manager-icon",'synaptic-pkexec'],
+    ["Session Settings","preferences-desktop",'lxsession-edit'],
+    ["Monitor Settings","computer",'lxrandr'],
+    ["Hotkeys", "preferences-desktop-keyboard", "lxhotkey --gui=gtk"],
+    ["Network", "preferences-system-network", "connman-gtk"],
+    ["Task Manager", "utilities-system-monitor", "lxtask"],
+    ["Root Terminal", "utilities-terminal", "lxqt-sudo lxterminal"],
+]
+
+locale.setlocale(locale.LC_ALL, '')   #set locale from 'LANG'
+Xcodec=locale.getpreferredencoding(False)
+
+class LXDEControlCenter:
+
+    def destroy(self, widget, data=None):
+        Gtk.main_quit()
+
+    def mouse(self, widget, event, data=None):
+        if event.button==1:
+           pathinfo=widget.get_path_at_pos(int(event.x),int(event.y)) 
+           if pathinfo==None: return False
+           pathnr=pathinfo[0]  
+           command=self.liststore[pathnr][2]
+           os.system(command+' &') 
+           self.window.set_keep_above(False)  # Perder o foco para enviar a janela para o segundo plano
+           return True
+        return False
+
+    def __init__(self):
+        window = Gtk.Window()
+        self.window=window
+        window.set_title('LXDE Control Center')
+        window.set_icon_name("configurator")  # Definindo o ícone do programa
+        window.connect("destroy", self.destroy)
+        window.set_border_width(10)
+        window.set_position(Gtk.WindowPosition.CENTER)
+
+        grid = Gtk.Grid()
+        grid.set_margin_top(10)
+        grid.set_margin_bottom(10)
+        grid.set_margin_start(10)
+        grid.set_margin_end(10)
+        grid.set_column_spacing(10)
+        grid.set_row_spacing(10)
+        window.add(grid)
+
+        it=Gtk.IconTheme.get_default()
+        row = 0
+        col = 0
+        button_width = 150  # Largura fixa para os botões
+        for line in control_center_icons:
+            button = Gtk.Button()
+            try:
+                if '/' in line[1]:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file(line[1])
+                else:
+                    pixbuf = it.load_icon(line[1], 48, 0)
+                image = Gtk.Image.new_from_pixbuf(pixbuf)
+                button.set_image(image)
+            except:
+                button.set_label('Error')
+            
+            label = Gtk.Label(label=line[0])
+            button.set_size_request(button_width, -1)  # Define a largura fixa para os botões
+            button.connect("clicked", self.on_button_clicked, line[2])
+            grid.attach(button, col, row, 1, 1)
+            grid.attach_next_to(label, button, Gtk.PositionType.BOTTOM, 1, 1)
+            col += 1
+            if col == 4:
+                col = 0
+                row += 2
+        window.show_all()
+
+    def on_button_clicked(self, button, command):
+        os.system(command + ' &')
+        self.window.set_keep_above(False)  # Perder o foco para enviar a janela para o segundo plano
+
+    def main(self):
+        Gtk.main()
+
+if __name__ == "__main__":
+     app = LXDEControlCenter()
+     app.main()
